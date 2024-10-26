@@ -1,0 +1,118 @@
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Black_Italic.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 900;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Black.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 900;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Bold_Italic.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 700;
+} */
+
+@font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Bold.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 700;
+}
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_ExtraBold_Italic.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 800;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_ExtraBold.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 800;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_ExtraLight_Italic.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 200;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_ExtraLight.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 200;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Italic.woff2') format('woff2');
+  font-display: swap;
+  font-style: italic;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Light.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 300;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Medium_Italic.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 500;
+} */
+
+@font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Medium.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Regular.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 400;
+}
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_SemiBold_Italic.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 600;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_SemiBold.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 600;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Thin_Italic.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 100;
+} */
+
+/* @font-face {
+  font-family: 'IvyEpic';
+  src: url('/fonts/IvyEpic_Thin.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 100;
+} */

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "ES2022",
+    "target": "esnext",
+    "jsx": "preserve",
+    "lib": ["dom", "esnext"],
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "baseUrl": "src",
+    "moduleResolution": "Bundler",
+
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/env.ts", "create/**/*.ts", "gatsby-node.ts", "gatsby-ssr.tsx", "gatsby-browser.tsx", "gatsby-config.ts", "gatsby-shared.tsx"],
+  "exclude": ["node_modules", "public", ".cache", "src/browser"]
+}

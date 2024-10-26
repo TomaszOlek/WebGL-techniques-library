@@ -1,0 +1,29 @@
+{
+  "endOfLine": "lf",
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^env(.*)$",
+    "^components/atoms(.*)$",
+    "^components/molecules(.*)$",
+    "^components/organisms(.*)$",
+    "^layouts(.*)$",
+    "^views/(.*)$",
+    "^contexts/(.*)$",
+    "^constants/(.*)$",
+    "^schemas/(.*)$",
+    "^graphql/(.*)$",
+    "^lib/(.*)$",
+    "^hooks/(.*)$",
+    "^utils/(.*)$",
+    "^styles/(.*)$",
+    "^types/(.*)$",
+    "^assets/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}
