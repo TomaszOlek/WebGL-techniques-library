@@ -20,6 +20,9 @@ export const ParticleImageScene: React.FC<ParticleImageSceneProps> = ({
     displacementTexture,
   })
 
+  /**
+   * Points
+   */
   const spacing = 1
   const columns = Math.floor(viewport.width / spacing)
   const rows = Math.floor(viewport.height / spacing)
@@ -54,10 +57,14 @@ export const ParticleImageScene: React.FC<ParticleImageSceneProps> = ({
     return { pointGeometry: geometry, pointMaterial: material }
   }, [viewport.width, viewport.height])
 
+  //
   useEffect(() => {
     pointMaterial.uniforms.u_displacement.value = displacementTexture
   }, [displacementTexture])
 
+  /**
+   * Render loop
+   */
   useFrame((state) => {
     const aspectRatio = viewport.width / viewport.height
     const mousePos = new THREE.Vector2(

@@ -24,31 +24,14 @@ export const MouseRipplesScene = forwardRef<MouseRipplesRef>((props, ref) => {
   const ripples = useRef<(THREE.Mesh | null)[]>([])
   const renderTarget = useRef(new THREE.WebGLRenderTarget(512, 512))
 
+  /**
+   * Ripple
+   */
   const mousePos = new THREE.Vector2()
   const prevMousePos = new THREE.Vector2()
   let currentWave = 0
 
   const brush = useTexture('/image-particles/brush.png')
-
-  useFrame((state) => {
-    ripples.current.forEach((ripple) => {
-      if (ripple && ripple.visible) {
-        ripple.rotation.z += RIPPLE_ROTATION_SPEED
-        ripple.scale.x = ripple.scale.y = 0.98 * ripple.scale.x + 0.06
-
-        const material = ripple.material as THREE.MeshBasicMaterial
-        material.opacity -= OPACITY_DECAY
-
-        if (material.opacity <= 0) ripple.visible = false
-      }
-    })
-
-    state.gl.setRenderTarget(renderTarget.current)
-    state.gl.clear()
-    state.gl.render(state.scene, state.camera)
-    state.gl.setRenderTarget(null)
-    state.gl.clear()
-  })
 
   useEffect(() => {
     const onMouseMove = (event: MouseEvent) => {
@@ -87,6 +70,29 @@ export const MouseRipplesScene = forwardRef<MouseRipplesRef>((props, ref) => {
     window.addEventListener('mousemove', onMouseMove)
     return () => window.removeEventListener('mousemove', onMouseMove)
   }, [viewport.width, viewport.height])
+
+  /**
+   * Render loop
+   */
+  useFrame((state) => {
+    ripples.current.forEach((ripple) => {
+      if (ripple && ripple.visible) {
+        ripple.rotation.z += RIPPLE_ROTATION_SPEED
+        ripple.scale.x = ripple.scale.y = 0.98 * ripple.scale.x + 0.06
+
+        const material = ripple.material as THREE.MeshBasicMaterial
+        material.opacity -= OPACITY_DECAY
+
+        if (material.opacity <= 0) ripple.visible = false
+      }
+    })
+
+    state.gl.setRenderTarget(renderTarget.current)
+    state.gl.clear()
+    state.gl.render(state.scene, state.camera)
+    state.gl.setRenderTarget(null)
+    state.gl.clear()
+  })
 
   useImperativeHandle(
     ref,
