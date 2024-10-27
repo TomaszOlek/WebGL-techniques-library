@@ -1,4 +1,4 @@
-import { Center, OrbitControls } from '@react-three/drei'
+import { Center } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import {
   fragmentShader,

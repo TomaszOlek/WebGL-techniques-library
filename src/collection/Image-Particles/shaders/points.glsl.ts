@@ -1,7 +1,7 @@
 import { useTexture } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { GLSL } from 'gl-react'
-import { useControls } from 'leva'
+// import { useControls } from 'leva'
 import { useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 
@@ -27,6 +27,7 @@ void main() {
 
 		displacementUv.y *= -1.;
 
+    // Calculate texture offsets based on UV coordinates and grid layout
 		displacementUv /= vec2(u_numberColumns, u_numberLines);
 
     float texOffsetU = vUv.x / u_numberColumns + 0.5;
@@ -60,29 +61,22 @@ float circle(vec2 uv, float border) {
 }
 
 void main() {
-    // Get the texture coordinates of the fragment
     vec2 uv = gl_PointCoord;
 
-    // Invert the y-coordinate of the texture
     uv.y *= -1.0;
 
-    // Scale down the texture coordinates based on the number of rows and columns
+    // Calculate texture offsets based on UV coordinates and grid layout
     uv /= vec2(u_numberColumns, u_numberLines);
 
-    // Calculate texture offsets based on UV coordinates and grid layout
     float texOffsetU = vUv.x / u_numberColumns + 0.5;
     float texOffsetV = vUv.y / u_numberLines + 0.5;
 
-    // Adjust the UV coordinates by the calculated offsets
     uv += vec2(texOffsetU, texOffsetV);
 
-    // Apply the scaling factor to the UV coordinates
     uv *= u_scale;
 
-    // Sample the texture at the calculated UV coordinates
     vec4 texColor = texture2D(u_texture, uv);
 
-    // Output the final color for this fragment
     gl_FragColor = texColor;
 }
 
