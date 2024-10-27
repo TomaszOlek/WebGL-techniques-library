@@ -1,132 +1,137 @@
 import { useTexture } from '@react-three/drei'
+import { useThree } from '@react-three/fiber'
 import { GLSL } from 'gl-react'
 import { useControls } from 'leva'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 
 // Vertex shader
 export const vertexShader = GLSL/* glsl */ `
 uniform float u_pointSize;
-uniform float u_progress;
 uniform vec2 u_mousePosition;
+uniform sampler2D u_displacement;
+uniform float u_aspectRation;
+
+uniform float u_numberLines;
+uniform float u_numberColumns;
 
 varying vec2 vUv;
-
-attribute vec3 initPosition;
+varying vec4 displacement;
 
 void main() {
     #include <begin_vertex>
 
-    // Calculate the distance from the current vertex to the mouse position
-    float distanceToMouse = distance(u_mousePosition, vec2(position.x, position.y));
+    vUv = position.xy;
 
-    // Check if the distance is within the specified radius of 0.2
-    if (distanceToMouse < 0.2) {
-        transformed = vec3(position.x, position.y, 0.0); // Set z to 0 if within radius
-    } else {
-        transformed = vec3(position.x, position.y, (position.z - initPosition.z) * -u_progress);
-    }
+    vec2 displacementUv = uv;
+
+		displacementUv.y *= -1.;
+
+		displacementUv /= vec2(u_numberColumns, u_numberLines);
+
+    float texOffsetU = vUv.x / u_numberColumns + 0.5;
+		float texOffsetV = vUv.y / u_numberLines + 0.5;
+
+		displacementUv += vec2(texOffsetU, texOffsetV) ;
+    
+    vec4 displacement = texture2D(u_displacement, displacementUv);
+    
+    transformed = position;
+    transformed.z += displacement.r * 10.0; 
 
     #include <project_vertex>
     gl_PointSize = u_pointSize;
-
-    vUv = position.xy;
 }
 `
-
 // Fragment shader
 export const fragmentShader = GLSL/* glsl */ `
-	uniform sampler2D u_texture;
-	uniform float u_numberLines;
-	uniform float u_numberColumns;
-	
-	varying vec2 vUv;
+uniform sampler2D u_texture;
+uniform float u_numberLines;
+uniform float u_numberColumns;
+uniform float u_aspectRation;
+uniform vec2 u_scale;
 
-	float circle(vec2 uv, float border) {
-		float radius = 0.5;
-		float dist = radius - distance(uv, vec2(0.5));
-		return smoothstep(0.0, border, dist);
-	}
+varying vec2 vUv;
 
-	void main() {
-		vec2 uv = gl_PointCoord;
+float circle(vec2 uv, float border) {
+    float radius = 0.5;
+    float dist = radius - distance(uv, vec2(0.5));
+    return smoothstep(0.0, border, dist);
+}
 
-		uv.y *= -1.;
+void main() {
+    // Get the texture coordinates of the fragment
+    vec2 uv = gl_PointCoord;
 
-		uv /= vec2(u_numberColumns, u_numberLines);
+    // Invert the y-coordinate of the texture
+    uv.y *= -1.0;
 
-		float texOffsetU = vUv.x / u_numberColumns;
-		float texOffsetV = vUv.y / u_numberLines;
+    // Scale down the texture coordinates based on the number of rows and columns
+    uv /= vec2(u_numberColumns, u_numberLines);
 
-		uv += vec2(texOffsetU, texOffsetV);
+    // Calculate texture offsets based on UV coordinates and grid layout
+    float texOffsetU = vUv.x / u_numberColumns + 0.5;
+    float texOffsetV = vUv.y / u_numberLines + 0.5;
 
+    // Adjust the UV coordinates by the calculated offsets
+    uv += vec2(texOffsetU, texOffsetV);
 
-		vec4 texColor = texture2D(u_texture, uv); 
+    // Apply the scaling factor to the UV coordinates
+    uv *= u_scale;
 
-		gl_FragColor = texColor;
+    // Sample the texture at the calculated UV coordinates
+    vec4 texColor = texture2D(u_texture, uv);
 
-		// Discard pixels with low alpha
-		if (gl_FragColor.r < 0.1) {
-			discard;
-		}
+    // Output the final color for this fragment
+    gl_FragColor = texColor;
+}
 
-		gl_FragColor.a = circle(gl_PointCoord, 0.2);
-	}
 `
 
-export const usePointsSetup = () => {
+type PointsSetupProps = {
+  displacementTexture?: THREE.Texture
+}
+
+export const usePointsSetup = ({ displacementTexture }: PointsSetupProps) => {
+  const { viewport, invalidate } = useThree((state) => ({
+    viewport: state.viewport,
+    invalidate: state.invalidate,
+  }))
+
   const image = useTexture('/image-particles/image.jpg')
+  const spacing = 1
 
-  const multiplier = 18
+  const uniforms = useMemo(() => {
+    const columns = Math.floor(viewport.width / spacing)
+    const rows = Math.floor(viewport.height / spacing)
+    const viewportAspectRatio = viewport.width / viewport.height
+    const textureAspectRatio = image.image.width / image.image.height
 
-  const shaderSettings = {
-    u_time: 0,
-    u_pointSize: 2.8,
-    u_texture: image,
-    u_numberLines: 16 * multiplier,
-    u_numberColumns: 9 * multiplier,
-    u_progress: 1,
-    u_mousePosition: new THREE.Vector2(0, 0),
-  }
+    // Calculate scale to preserve aspect ratio and cover viewport
+    const scale = new THREE.Vector2(1, 1)
+    if (textureAspectRatio > viewportAspectRatio) {
+      scale.x = viewportAspectRatio / textureAspectRatio
+    } else {
+      scale.y = textureAspectRatio / viewportAspectRatio
+    }
 
-  const uniforms = useMemo(
-    () => ({
-      u_time: { value: 0 },
-      u_pointSize: { value: 1 },
+    return {
+      u_pointSize: { value: 6 },
       u_texture: { value: image },
-      u_numberLines: { value: 9 * multiplier },
-      u_numberColumns: { value: 16 * multiplier },
-      u_progress: { value: 1 },
+      u_displacement: { value: displacementTexture },
+      u_numberLines: { value: rows },
+      u_numberColumns: { value: columns },
       u_mousePosition: { value: new THREE.Vector2(0, 0) },
-    }),
-    []
-  )
+      u_aspectRatio: { value: viewportAspectRatio },
+      u_scale: { value: scale },
+    }
+  }, [displacementTexture, viewport.width, viewport.height, image])
 
-  useControls(
-    'shaderMaterial',
-    {
-      scale: {
-        value: shaderSettings.u_pointSize,
-        step: 0.01,
-        min: 0,
-        max: 20,
-        onChange: (value: number) => {
-          uniforms.u_pointSize.value = value
-        },
-      },
-      progress: {
-        value: shaderSettings.u_progress,
-        step: 0.01,
-        min: 0,
-        max: 1,
-        onChange: (value: number) => {
-          uniforms.u_progress.value = value
-        },
-      },
-    },
-
-    { collapsed: true }
-  )
+  useEffect(() => {
+    const handleResize = () => invalidate()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [invalidate])
 
   return { uniforms }
 }

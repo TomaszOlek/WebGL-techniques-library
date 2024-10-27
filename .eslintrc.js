@@ -44,6 +44,11 @@ module.exports = {
     "no-restricted-exports": "warn",
     "react/no-unknown-property": "off",
     "import/extensions": "off",
+    "react/no-array-index-key": "off",
+    "no-return-assign": "off",
+    "no-param-reassign": "off",
+    "no-multi-assign": "off",
+    "no-plusplus": "off", 
     'prettier/prettier': [
       // Enable prettier rules
       'error',
